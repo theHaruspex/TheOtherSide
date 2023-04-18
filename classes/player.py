@@ -113,9 +113,6 @@ class Player:
         if self.hunger >= self.MAX_HUNGER:
             self.health -= self.HUNGER_DAMAGE_RATE
 
-        print(f"hunger = {self.hunger}")
-        print(f"health = {self.health}")
-
     def handle_health(self):
         self.health = min(self.health, self.MAX_HEALTH)
         self.health = max(0, self.health)

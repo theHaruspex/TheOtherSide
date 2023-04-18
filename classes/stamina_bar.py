@@ -8,7 +8,9 @@ class StaminaBar:
     STAMINA_COLOR = (0, 255, 0)
     THIRST_COLOR = (255, 0, 0)
 
-    def __init__(self, screen_height, screen_width):
+    def __init__(self, screen_dimensions):
+        screen_width, screen_height = screen_dimensions
+
         # Initialize properties of the stamina bar
         self.full_width = screen_width // 3
         self.current_width = self.full_width

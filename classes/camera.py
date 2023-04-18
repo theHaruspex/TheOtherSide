@@ -2,7 +2,8 @@ import pygame
 
 
 class Camera:
-    def __init__(self, screen_width, screen_height):
+    def __init__(self, screen_dimensions):
+        screen_width, screen_height = screen_dimensions
         self.rect = pygame.Rect(0, 0, screen_width, screen_height)
 
     def update(self, player, background_surface, background_image):
