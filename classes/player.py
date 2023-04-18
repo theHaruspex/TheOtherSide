@@ -5,12 +5,18 @@ class Player:
     PLAYER_COLOR = (255, 255, 255)  # white
     WIDTH = 50
     HEIGHT = 50
+
+    MAX_HEALTH = 100
     ABSOLUTE_MAX_STAMINA = 100
     BASE_SPEED = 10
     SPRINT_SPEED = BASE_SPEED * 2
     STAMINA_DEPLETION_RATE = 1
     STAMINA_REPLINISH_RATE = 0.5
     THIRST_INCREASE_RATE = 0.1
+
+    MAX_HUNGER = 100
+    HUNGER_GROWTH_RATE = 0.5
+    HUNGER_DAMAGE_RATE = 0.5
 
     def __init__(self, x, y):
         # Create a surface for the player and fill it with white color
@@ -29,6 +35,10 @@ class Player:
         self.sprint_cooldown = False
         self.is_moving = False
         self.thirst_level = 0
+
+        # Define the player's initial health and hunger parameters
+        self.health = self.MAX_HEALTH
+        self.hunger = 0
 
     def bound_stamina(self):
         self.current_stamina = min(self.current_stamina, self.max_stamina)
@@ -96,6 +106,24 @@ class Player:
         self.handle_keys()
         self.keep_within_bounds(map_surface)
 
+    def handle_hunger(self):
+        if self.hunger < self.MAX_HUNGER:
+            self.hunger += self.HUNGER_GROWTH_RATE
+
+        if self.hunger >= self.MAX_HUNGER:
+            self.health -= self.HUNGER_DAMAGE_RATE
+
+        print(f"hunger = {self.hunger}")
+        print(f"health = {self.health}")
+
+    def handle_health(self):
+        self.health = min(self.health, self.MAX_HEALTH)
+        self.health = max(0, self.health)
+
+        if self.health == 0:
+            print("Game Over")
+
+
     def draw(self, screen, camera):
         screen.blit(
             self.image,
@@ -104,4 +132,6 @@ class Player:
 
     def update(self, map_surface, screen, camera):
         self.handle_movement(map_surface)
+        self.handle_hunger()
+        self.handle_health()
         self.draw(screen, camera)
