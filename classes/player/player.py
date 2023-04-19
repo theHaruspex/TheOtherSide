@@ -21,7 +21,6 @@ class Player:
     # Velocity
     BASE_VELOCITY = 15
     FATIGUE_VELOCITY = BASE_VELOCITY // 5
-    SPRINT_VELOCITY = BASE_VELOCITY * 5
     FRICTION = 0.97
 
     def __init__(self, x, y):
@@ -40,7 +39,7 @@ class Player:
         # Stamina
         self.stamina_cap = self.MAX_STAMINA
         self.current_stamina = self.MAX_STAMINA
-        self.fatigue = 0
+        self.fatigue_level = 0
 
         # Velocity
         self.velocity_x = 0
@@ -50,62 +49,9 @@ class Player:
 
         # Player states
         self.is_moving = False
-        self.is_sprinting = False
         self.is_fatigued = False
 
-    def handle_velocity(self, surface):
-        self.velocity_x *= self.FRICTION
-        self.velocity_y *= self.FRICTION
-
-        if self.rect.left <= 0 or self.rect.right >= surface.get_width():
-            self.velocity_x = -self.velocity_x
-        if self.rect.top <= 0 or self.rect.bottom >= surface.get_height():
-            self.velocity_y = -self.velocity_y
-
-        self.rect.move_ip(self.velocity_x, self.velocity_y)
-
-        if self.is_fatigued:
-            if self.velocity_x > self.max_velocity:
-                self.velocity_x = self.max_velocity
-            elif self.velocity_x < -self.max_velocity:
-                self.velocity_x = -self.max_velocity
-            if self.velocity_y > self.max_velocity:
-                self.velocity_y = self.max_velocity
-            elif self.velocity_y < -self.max_velocity:
-                self.velocity_y = -self.max_velocity
-
-    def start_sprinting(self):
-        self.max_velocity = self.SPRINT_VELOCITY
-        self.acceleration = 2
-        self.current_stamina -= self.STAMINA_DEPLETION_RATE
-        if self.fatigue < self.MAX_FATIGUE:
-            self.fatigue += self.FATIGUE_INCREASE_RATE
-
-    def stop_sprinting(self):
-        self.max_velocity = self.BASE_VELOCITY
-        self.acceleration = 1
-        if self.is_fatigued:
-            self.max_velocity = self.FATIGUE_VELOCITY
-        self.current_stamina += self.STAMINA_REPLINISH_RATE
-
-    def handle_sprint_logic(self):
-        self.handle_fatigue_status()
-
-        if not self.is_moving or self.is_fatigued:
-            self.is_sprinting = False
-
-        if self.is_sprinting:
-            self.start_sprinting()
-        else:
-            self.stop_sprinting()
-
-    def handle_movement(self, map_surface):
-        self.handle_fatigue_value()
-        self.handle_sprint_logic()
-        self.handle_keys()
-        self.handle_velocity(map_surface)
-        self.keep_within_bounds(map_surface)
-
+    # Executive functions
     def update(self, map_surface, screen, camera):
         self.handle_mouse()
         self.handle_movement(map_surface)
@@ -116,13 +62,40 @@ class Player:
     def handle_mouse(self):
         left_click, middle_click, right_click = pygame.mouse.get_pressed()
 
-        sprinting = False
-        if right_click:
-            sprinting = True
-        self.is_sprinting = sprinting
-
         if left_click:
             click_pos = pygame.mouse.get_pos()
+
+    def draw(self, screen, camera):
+        screen.blit(self.image, self.rect.move(-camera.rect.x, -camera.rect.y))
+
+    # Movement
+    def handle_movement(self, map_surface):
+        self.handle_velocity(map_surface)
+        self.handle_keys()
+
+    def handle_velocity(self, surface):
+        self.velocity_x *= self.FRICTION
+        self.velocity_y *= self.FRICTION
+        self.handle_object_collision(surface)
+        self.rect.move_ip(self.velocity_x, self.velocity_y)
+        if self.is_fatigued:
+            self.cap_velocity()
+
+    def handle_object_collision(self, surface):
+        if self.rect.left <= 0 or self.rect.right >= surface.get_width():
+            self.velocity_x = -self.velocity_x
+        if self.rect.top <= 0 or self.rect.bottom >= surface.get_height():
+            self.velocity_y = -self.velocity_y
+
+    def cap_velocity(self):
+        if self.velocity_x > self.max_velocity:
+            self.velocity_x = self.max_velocity
+        elif self.velocity_x < -self.max_velocity:
+            self.velocity_x = -self.max_velocity
+        if self.velocity_y > self.max_velocity:
+            self.velocity_y = self.max_velocity
+        elif self.velocity_y < -self.max_velocity:
+            self.velocity_y = -self.max_velocity
 
     def handle_keys(self):
         keys = pygame.key.get_pressed()
@@ -141,9 +114,22 @@ class Player:
             moving = True
         self.is_moving = moving
 
+    # Stamina
     def handle_stamina(self):
+        self.bound_stamina()
+        self.handle_fatigue_value()
+        self.handle_fatigue_status()
+
+    def bound_stamina(self):
         self.current_stamina = min(self.current_stamina, self.stamina_cap)
         self.current_stamina = max(0, self.current_stamina)
+
+    def handle_fatigue_value(self):
+        self.fatigue_level = max(0, self.fatigue_level)
+        self.fatigue_level = min(self.fatigue_level, 75)
+        self.stamina_cap = self.MAX_STAMINA - self.fatigue_level
+        if not self.is_fatigued:
+            self.fatigue_level -= self.FATIGUE_DECREASE_RATE
 
     def handle_fatigue_status(self):
         if self.current_stamina > self.stamina_cap * 0.7:
@@ -152,20 +138,7 @@ class Player:
         if self.current_stamina <= 0:
             self.is_fatigued = True
 
-    def handle_fatigue_value(self):
-        self.fatigue = max(0, self.fatigue)
-        self.fatigue = min(self.fatigue, 75)
-        self.stamina_cap = self.MAX_STAMINA - self.fatigue
-        if not self.is_fatigued:
-            self.fatigue -= self.FATIGUE_DECREASE_RATE
-
-    def keep_within_bounds(self, map_surface):
-        map_rect = pygame.Rect(0, 0, map_surface.get_width(), map_surface.get_height())
-        self.rect.clamp_ip(map_rect)
-
+    # Stats
     def handle_health(self):
         self.health = min(self.health, self.MAX_HEALTH)
         self.health = max(0, self.health)
-
-    def draw(self, screen, camera):
-        screen.blit(self.image, self.rect.move(-camera.rect.x, -camera.rect.y))
