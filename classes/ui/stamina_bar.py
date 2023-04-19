@@ -65,7 +65,8 @@ class StaminaBar:
         surface.blit(self.base_image, self.base_rect)
         surface.blit(self.stamina_image, self.stamina_rect)
 
-    def update(self, player_stamina, player_thirst, surface):
-        self.update_thirst(player_thirst)
+    def update(self, player_stamina, player_fatigue, surface):
+        self.update_thirst(player_fatigue)
         self.update_stamina(player_stamina)
         self.draw(surface)
+
