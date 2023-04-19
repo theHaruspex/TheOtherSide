@@ -52,6 +52,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/classes/player/player.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/classes/player/stamina.py">
           <value>
             <Attribute>
@@ -73,6 +80,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/classes/ui/user_interface.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/classes/user_interface.py">
           <value>
             <Attribute>
@@ -81,6 +95,13 @@
           </value>
         </entry>
         <entry key="/experiment.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/main.py">
           <value>
             <Attribute>
               <option name="separator" value=":" />

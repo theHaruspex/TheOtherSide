@@ -1,5 +1,7 @@
 import pygame
 
+from classes.player.stamina import Stamina
+
 
 class Player:
     # Image
@@ -9,14 +11,6 @@ class Player:
 
     # Stats
     MAX_HEALTH = 100
-
-    # Stamina
-    MAX_STAMINA = 100
-    STAMINA_DEPLETION_RATE = 1
-    STAMINA_REPLINISH_RATE = 0.5
-    FATIGUE_INCREASE_RATE = 0.3
-    FATIGUE_DECREASE_RATE = FATIGUE_INCREASE_RATE / 4
-    MAX_FATIGUE = 75
 
     # Velocity
     BASE_VELOCITY = 15
@@ -34,12 +28,8 @@ class Player:
         self.rect.y = y
 
         # Stats
+        self.stamina = Stamina()
         self.health = self.MAX_HEALTH
-
-        # Stamina
-        self.stamina_cap = self.MAX_STAMINA
-        self.current_stamina = self.MAX_STAMINA
-        self.fatigue_level = 0
 
         # Velocity
         self.velocity_x = 0
@@ -49,13 +39,12 @@ class Player:
 
         # Player states
         self.is_moving = False
-        self.is_fatigued = False
 
     # Executive functions
     def update(self, map_surface, screen, camera):
         self.handle_mouse()
         self.handle_movement(map_surface)
-        self.handle_stamina()
+        self.stamina.update()
         self.handle_health()
         self.draw(screen, camera)
 
@@ -78,7 +67,7 @@ class Player:
         self.velocity_y *= self.FRICTION
         self.handle_object_collision(surface)
         self.rect.move_ip(self.velocity_x, self.velocity_y)
-        if self.is_fatigued:
+        if self.stamina.is_fatigued:
             self.cap_velocity()
 
     def handle_object_collision(self, surface):
@@ -88,14 +77,14 @@ class Player:
             self.velocity_y = -self.velocity_y
 
     def cap_velocity(self):
-        if self.velocity_x > self.max_velocity:
-            self.velocity_x = self.max_velocity
-        elif self.velocity_x < -self.max_velocity:
-            self.velocity_x = -self.max_velocity
-        if self.velocity_y > self.max_velocity:
-            self.velocity_y = self.max_velocity
-        elif self.velocity_y < -self.max_velocity:
-            self.velocity_y = -self.max_velocity
+        if self.velocity_x > self.FATIGUE_VELOCITY:
+            self.velocity_x = self.FATIGUE_VELOCITY
+        elif self.velocity_x < -self.FATIGUE_VELOCITY:
+            self.velocity_x = -self.FATIGUE_VELOCITY
+        if self.velocity_y > self.FATIGUE_VELOCITY:
+            self.velocity_y = self.FATIGUE_VELOCITY
+        elif self.velocity_y < -self.FATIGUE_VELOCITY:
+            self.velocity_y = -self.FATIGUE_VELOCITY
 
     def handle_keys(self):
         keys = pygame.key.get_pressed()
@@ -114,29 +103,6 @@ class Player:
             moving = True
         self.is_moving = moving
 
-    # Stamina
-    def handle_stamina(self):
-        self.bound_stamina()
-        self.handle_fatigue_value()
-        self.handle_fatigue_status()
-
-    def bound_stamina(self):
-        self.current_stamina = min(self.current_stamina, self.stamina_cap)
-        self.current_stamina = max(0, self.current_stamina)
-
-    def handle_fatigue_value(self):
-        self.fatigue_level = max(0, self.fatigue_level)
-        self.fatigue_level = min(self.fatigue_level, 75)
-        self.stamina_cap = self.MAX_STAMINA - self.fatigue_level
-        if not self.is_fatigued:
-            self.fatigue_level -= self.FATIGUE_DECREASE_RATE
-
-    def handle_fatigue_status(self):
-        if self.current_stamina > self.stamina_cap * 0.7:
-            self.is_fatigued = False
-
-        if self.current_stamina <= 0:
-            self.is_fatigued = True
 
     # Stats
     def handle_health(self):
