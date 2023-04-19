@@ -19,14 +19,16 @@ class TextBox:
         self.font_color = self.MAIN_COLOR
         self.font = pygame.font.Font(None, self.font_size)
 
+        self.text = init_text
         self.text_lines = []
         self.current_line = ''
         self.line_height = 1.5 * self.font.size('Tg')[1]  # test line height
         self.add_text(init_text)
 
+        self.update_dimensions()
+
         self.alpha = 0
         self.is_fading_in = True
-        self.is_fading_out = False
 
         self.is_clickable = is_clickable
         self.is_mouse_over = self.detect_mouse_over()
@@ -38,9 +40,6 @@ class TextBox:
 
         if self.is_fading_in:
             self.fade_in()
-
-        elif self.is_fading_out:
-            self.fade_out()
 
     def blit_text_lines(self, surface):
         y = self.y
@@ -72,12 +71,6 @@ class TextBox:
             self.alpha = 255
             self.is_fading_in = False
 
-    def fade_out(self):
-        self.alpha -= self.FADE_OUT_RATE
-        if self.alpha < 0:
-            self.alpha = 0
-            self.is_fading_out = False
-
     def detect_mouse_over(self):
         mouse_pos = pygame.mouse.get_pos()
         return (self.x <= mouse_pos[0] <= self.x + self.width and
@@ -98,7 +91,7 @@ class TextBox:
 
     def detect_click(self):
         mouse_click = pygame.mouse.get_pressed()[0]
-        if mouse_click and self.detect_mouse_over():
+        if mouse_click and self.detect_mouse_over() and not self.is_fading_in:
             return True
         else:
             return False

@@ -15,7 +15,6 @@ class Stamina:
         self.is_fatigued = False
 
     def update(self):
-        self.stamina_level -= 1
         self.bound_stamina()
         self.handle_fatigue_value()
         self.handle_fatigue_status()

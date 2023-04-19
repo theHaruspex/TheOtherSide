@@ -1,13 +1,9 @@
 import pygame
+
 from classes.dialog.text_box import TextBox
+from classes.dialog.dialogue_tree import DialogueTree
 
-sample_dialogue = (
-    "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut "
-    "laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation "
-    "ullamcorper.")
-
-sample_portrait_path = "resources/the_prophetess.jpg"
-sample_background_path = "resources/dialogue_background.jpg"
+from classes.dialog.sample_values import *
 
 
 class Scene:
@@ -15,8 +11,8 @@ class Scene:
     TITLE_Y = 50
     TITLE_FONT_SIZE = 70
 
-    DIALOG_X = 440
-    DIALOG_Y = 180
+    NPC_TEXT_X = 440
+    NPC_TEXT_Y = 180
 
     PORTRAIT_X = 40
     PORTRAIT_Y = 50
@@ -26,36 +22,58 @@ class Scene:
     BACKGROUND_OVERLAY_ALPHA = 200
 
     def __init__(self):
-        self.title = TextBox(
+        self.dialogue_tree = DialogueTree(sample_adj_list)
+
+        self.title = self.create_title_box()
+        self.npc_dialogue = None
+        self.options = None
+        self.update_dialogue()
+
+        self.portrait = pygame.image.load(sample_portrait_path).convert()
+        self.portrait = pygame.transform.scale(self.portrait, self.PORTRAIT_SIZE)
+        self.background = pygame.image.load(sample_background_path).convert()
+
+    def create_title_box(self):
+        return TextBox(
             x=self.TITLE_X,
             y=self.TITLE_Y,
             init_text="The Prophetess",
             font_size=self.TITLE_FONT_SIZE
         )
 
-        self.dialog = TextBox(
-            x=self.DIALOG_X,
-            y=self.DIALOG_Y,
-            init_text=sample_dialogue
+    def draw_options(self, surface):
+        for option in self.options:
+            option.render(surface)
+
+    def update_dialogue(self):
+        self.npc_dialogue = TextBox(
+            x=self.NPC_TEXT_X,
+            y=self.NPC_TEXT_Y,
+            init_text=self.dialogue_tree.get_current_node_text()
         )
 
-        self.options = TextBox(
-            x=500,
-            y=400,
-            init_text="This is the first option",
-            is_clickable=True
-        )
+        self.options = []
+        for i, option_text in enumerate(self.dialogue_tree.get_current_node_options()):
+            self.options.append(
+                TextBox(
+                    x=500,
+                    y=400 + i * 50,
+                    init_text=option_text,
+                    is_clickable=True)
+            )
 
-        self.portrait = pygame.image.load(sample_portrait_path).convert()
-        self.portrait = pygame.transform.scale(self.portrait, self.PORTRAIT_SIZE)
-        self.background = pygame.image.load(sample_background_path).convert()
+    def handle_option_select(self):
+        for option in self.options:
+            if option.detect_click():
+                selected_option = option.text
+                self.dialogue_tree.select_option(selected_option)
+                self.update_dialogue()
 
     def draw_portrait(self, screen):
         screen.blit(self.portrait, (self.PORTRAIT_X, self.PORTRAIT_Y))
 
     def draw_background(self, screen):
         screen.blit(self.background, (0, 0))
-
         overlay = pygame.Surface((screen.get_width(), screen.get_height()))
         overlay.set_alpha(self.BACKGROUND_OVERLAY_ALPHA)
         overlay.fill(self.BACKGROUND_OVERLAY_COLOR)
@@ -64,7 +82,8 @@ class Scene:
     def render(self, screen):
         self.draw_background(screen)
         self.title.render(screen)
-        self.dialog.render(screen)
+        self.handle_option_select()
+        self.npc_dialogue.render(screen)
         self.draw_portrait(screen)
-        self.options.render(screen)
+        self.draw_options(screen)
         pygame.display.update()
