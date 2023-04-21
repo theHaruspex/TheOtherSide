@@ -7,12 +7,17 @@ class Projectile:
     BASE_SIZE = 10
     BASE_SPEED = 10
 
-    def __init__(self, pos, velocity, charge_modifier):
+    def __init__(self, pos, velocity, charge_modifier, player):
         self.x, self.y = pos
         self.velocity_x, self.velocity_y = velocity
         self.size = self._scale_size(charge_modifier)
         self.speed = self._scale_speed(charge_modifier)
         self._scale_velocity()
+        self.knock_back_player(player)
+
+    def knock_back_player(self, player):
+        player.movement.velocity_x -= self.velocity_x
+        player.movement.velocity_y -= self.velocity_y
 
     def _scale_size(self, charge_modifier):
         size_modifier = charge_modifier / 100

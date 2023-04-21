@@ -30,7 +30,7 @@ class Gun:
                 mouse_pos = event.pos
                 direction = self. \
                     calculate_projectile_direction(player.camera_pos, mouse_pos)
-                self.projectiles.append(Projectile(player.map_pos, direction, self.charge_modifier))
+                self.projectiles.append(Projectile(player.map_pos, direction, self.charge_modifier, player))
                 self.charge_modifier = 0
 
         if mouse_pressed:
