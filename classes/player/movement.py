@@ -4,7 +4,7 @@ import pygame
 class Movement:
     BASE_VELOCITY = 15
     FATIGUE_VELOCITY = BASE_VELOCITY // 5
-    FRICTION = 0.97
+    FRICTION = 0.95
 
     def __init__(self):
         self.velocity_x = 0
@@ -22,7 +22,7 @@ class Movement:
         self.velocity_x *= self.FRICTION
         self.velocity_y *= self.FRICTION
         player.rect.move_ip(self.velocity_x, self.velocity_y)
-        if player.stamina.is_fatigued:
+        if player.energy.is_fatigued:
             self.cap_velocity()
 
     def handle_object_collision(self, surface, player):
@@ -40,14 +40,8 @@ class Movement:
             self.velocity_y = -abs(self.velocity_y)
 
     def cap_velocity(self):
-        if self.velocity_x > self.FATIGUE_VELOCITY:
-            self.velocity_x = self.FATIGUE_VELOCITY
-        elif self.velocity_x < -self.FATIGUE_VELOCITY:
-            self.velocity_x = -self.FATIGUE_VELOCITY
-        if self.velocity_y > self.FATIGUE_VELOCITY:
-            self.velocity_y = self.FATIGUE_VELOCITY
-        elif self.velocity_y < -self.FATIGUE_VELOCITY:
-            self.velocity_y = -self.FATIGUE_VELOCITY
+        self.velocity_x = max(min(self.velocity_x, self.FATIGUE_VELOCITY), -self.FATIGUE_VELOCITY)
+        self.velocity_y = max(min(self.velocity_y, self.FATIGUE_VELOCITY), -self.FATIGUE_VELOCITY)
 
     def handle_keys(self):
         keys = pygame.key.get_pressed()

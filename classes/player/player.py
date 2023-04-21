@@ -1,6 +1,6 @@
 import pygame
 
-from classes.player.stamina import Stamina
+from classes.player.energy import Energy
 from classes.player.movement import Movement
 from classes.player.gun.gun import Gun
 
@@ -20,7 +20,7 @@ class Player:
         self.rect.y = y
 
         self.movement = Movement()
-        self.stamina = Stamina()
+        self.energy = Energy()
         self.gun = Gun()
 
         self.health = self.MAX_HEALTH
@@ -33,12 +33,12 @@ class Player:
         self.movement.update(self, map_surface)
         self.rect.move_ip(self.movement.velocity_x, self.movement.velocity_y)
 
-        self.stamina.update()
+        self.energy.update(self.gun)
+        self.gun.update(self, map_surface)
         self.handle_health()
         self.draw(screen, camera)
         self.update_camera_pos(camera)
         self.update_map_position(map_surface)
-        self.gun.update(self, map_surface)
 
     def handle_health(self):
         self.health = min(self.health, self.MAX_HEALTH)

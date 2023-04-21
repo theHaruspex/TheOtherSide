@@ -9,7 +9,7 @@ class UserInterface:
 
     def update(self, screen, player):
         # Update the stamina bar
-        self.stamina_bar.update(player.stamina.stamina_level, player.stamina.fatigue_level, screen)
+        self.stamina_bar.update(player.energy.current_stamina, player.energy.fatigue_level, screen)
 
         # Update other status bars
         self.health_bar.update(player.health, screen)
