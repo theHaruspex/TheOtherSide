@@ -1,5 +1,6 @@
 import pygame
 
+
 class Movement:
     BASE_VELOCITY = 15
     FATIGUE_VELOCITY = BASE_VELOCITY // 5

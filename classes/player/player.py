@@ -29,7 +29,10 @@ class Player:
         self.map_pos = None
 
     def update(self, map_surface, screen, camera):
+        # Update the player's position by smaller increments
         self.movement.update(self, map_surface)
+        self.rect.move_ip(self.movement.velocity_x, self.movement.velocity_y)
+
         self.stamina.update()
         self.handle_health()
         self.draw(screen, camera)
