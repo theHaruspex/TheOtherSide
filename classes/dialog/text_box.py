@@ -31,7 +31,7 @@ class TextBox:
         self.is_fading_in = True
 
         self.is_clickable = is_clickable
-        self.is_mouse_over = self.detect_mouse_over()
+        self.mouse_already_pressed = pygame.mouse.get_pressed()[0]
 
     def render(self, surface):
         self.blit_text_lines(surface)
@@ -76,22 +76,17 @@ class TextBox:
         return (self.x <= mouse_pos[0] <= self.x + self.width and
                 self.y <= mouse_pos[1] <= self.y + self.height)
 
-    def change_color(self):
-        if self.font_color == self.MAIN_COLOR:
+    def handle_mouse_over(self):
+        if self.detect_mouse_over() and self.is_clickable:
             self.font_color = self.ALT_COLOR
         else:
             self.font_color = self.MAIN_COLOR
 
-    def handle_mouse_over(self):
-        is_mouse_over = self.detect_mouse_over()
-        if self.is_clickable:
-            if is_mouse_over != self.is_mouse_over:
-                self.is_mouse_over = is_mouse_over
-                self.change_color()
-
-    def detect_click(self):
-        mouse_click = pygame.mouse.get_pressed()[0]
-        if mouse_click and self.detect_mouse_over() and not self.is_fading_in:
-            return True
+    def handle_click(self):
+        if pygame.mouse.get_pressed()[0] and not self.mouse_already_pressed:
+            if self.detect_mouse_over() and not self.is_fading_in:
+                self.mouse_already_pressed = True
+                return True
         else:
-            return False
+            self.mouse_already_pressed = False
+        return False

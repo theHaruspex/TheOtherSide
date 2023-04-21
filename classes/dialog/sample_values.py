@@ -5,45 +5,75 @@ sample_dialogue = (
 
 sample_portrait_path = "resources/the_prophetess.jpg"
 sample_background_path = "resources/dialogue_background.jpg"
-sample_adj_list = {
+prophetess_dialogue = {
     "start": {
-        "text": "Hello there! How are you doing today?",
+        "text": "Welcome, traveler. You seek guidance?",
         "options": {
-            "Good": "good_response",
-            "Not great": "not_great_response"
+            "Yes": "guidance_response",
+            "No": "farewell"
         }
     },
-    "good_response": {
-        "text": "That's great to hear! Is there anything I can help you with?",
+    "guidance_response": {
+        "text": "Speak.",
         "options": {
-            "Yes": "yes_help_response",
-            "No": "no_help_response"
+            "What can you guide me on?": "guidance_description",
+            "I seek a quest.": "quest"
         }
     },
-    "not_great_response": {
-        "text": "Oh no, I'm sorry to hear that. Is there anything I can do to help?",
+    "guidance_description": {
+        "text": "Direction.",
         "options": {
-            "Yes": "yes_help_response",
-            "No": "no_help_response"
+            "Can you be more specific?": "specific_guidance",
+            "I decline.": "farewell"
         }
     },
-    "yes_help_response": {
-        "text": "Sure thing! What do you need help with?",
+    "specific_guidance": {
+        "text": "Dangerous path ahead.",
         "options": {
-            "Technical issue": "tech_help_response",
-            "Billing question": "billing_help_response"
+            "Thank you.": "farewell",
+            "Can you tell me more?": "specific_guidance_more"
         }
     },
-    "no_help_response": {
-        "text": "Okay, no problem. Let me know if you need anything later!",
+    "specific_guidance_more": {
+        "text": "Monsters.",
+        "options": {
+            "Thank you.": "farewell"
+        }
+    },
+    "quest": {
+        "text": "Journey.",
+        "options": {
+            "What quest?": "quest_description",
+            "I decline.": "farewell"
+        }
+    },
+    "quest_description": {
+        "text": "Retrieve artifact.",
+        "options": {
+            "What artifact?": "artifact_description",
+            "I decline.": "farewell"
+        }
+    },
+    "artifact_description": {
+        "text": "Lost amulet of power.",
+        "options": {
+            "Where was it lost?": "where_description",
+            "I decline.": "farewell"
+        }
+    },
+    "where_description": {
+        "text": "Deep in forest.",
+        "options": {
+            "Can you mark it on my map?": "mark_map",
+            "I decline.": "farewell"
+        }
+    },
+    "mark_map": {
+        "text": "Yes.",
         "options": {}
     },
-    "tech_help_response": {
-        "text": "I'm sorry, I'm not equipped to handle technical issues. Please contact our technical support department.",
-        "options": {}
-    },
-    "billing_help_response": {
-        "text": "For billing inquiries, please contact our billing department.",
+    "farewell": {
+        "text": "Farewell.",
         "options": {}
     }
 }

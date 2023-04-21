@@ -22,7 +22,7 @@ class Scene:
     BACKGROUND_OVERLAY_ALPHA = 200
 
     def __init__(self):
-        self.dialogue_tree = DialogueTree(sample_adj_list)
+        self.dialogue_tree = DialogueTree(prophetess_dialogue)
 
         self.title = self.create_title_box()
         self.npc_dialogue = None
@@ -52,19 +52,14 @@ class Scene:
             init_text=self.dialogue_tree.get_current_node_text()
         )
 
-        self.options = []
-        for i, option_text in enumerate(self.dialogue_tree.get_current_node_options()):
-            self.options.append(
-                TextBox(
-                    x=500,
-                    y=400 + i * 50,
-                    init_text=option_text,
-                    is_clickable=True)
-            )
+        self.options = [
+            TextBox(x=500, y=400 + i * 50, init_text=option_text, is_clickable=True)
+            for i, option_text in enumerate(self.dialogue_tree.get_current_node_options())
+        ]
 
     def handle_option_select(self):
         for option in self.options:
-            if option.detect_click():
+            if option.handle_click():
                 selected_option = option.text
                 self.dialogue_tree.select_option(selected_option)
                 self.update_dialogue()

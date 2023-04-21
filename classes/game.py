@@ -18,35 +18,20 @@ class Game:
         self.camera = Camera(screen_dimensions)
 
     def update(self):
-        # Draw the background
         self.screen.blit(self.MAP_SURFACE, (0, 0), self.camera)
-
-        # Draw the current player state
-        self.player.update(self.MAP_SURFACE, self.screen, self.camera)
-
-        # Update the camera to follow the player
         self.camera.update(self.player, self.MAP_SURFACE, self.MAP_IMG)
-
-        # Update the UI
+        self.player.update(self.MAP_SURFACE, self.screen, self.camera)
         self.ui.update(self.screen, self.player)
 
     def run(self):
         clock = pygame.time.Clock()
         running = True
         while running:
-            # Handle events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
 
-            # Update the game state
             self.update()
-
-            # Update the display
             pygame.display.flip()
-
-            # Limit to 60 frames per second
             clock.tick(60)
-
-        # Clean up
         pygame.quit()
