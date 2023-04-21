@@ -25,10 +25,18 @@ class Movement:
             self.cap_velocity()
 
     def handle_object_collision(self, surface, player):
-        if player.rect.left <= 0 or player.rect.right >= surface.get_width():
-            self.velocity_x = -self.velocity_x
-        if player.rect.top <= 0 or player.rect.bottom >= surface.get_height():
-            self.velocity_y = -self.velocity_y
+        if player.rect.left <= 0:
+            player.rect.left = 0
+            self.velocity_x = abs(self.velocity_x)
+        elif player.rect.right >= surface.get_width():
+            player.rect.right = surface.get_width()
+            self.velocity_x = -abs(self.velocity_x)
+        if player.rect.top <= 0:
+            player.rect.top = 0
+            self.velocity_y = abs(self.velocity_y)
+        elif player.rect.bottom >= surface.get_height():
+            player.rect.bottom = surface.get_height()
+            self.velocity_y = -abs(self.velocity_y)
 
     def cap_velocity(self):
         if self.velocity_x > self.FATIGUE_VELOCITY:
