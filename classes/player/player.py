@@ -21,12 +21,12 @@ class Player:
 
         self.movement = Movement()
         self.stamina = Stamina()
+        self.gun = Gun()
+
         self.health = self.MAX_HEALTH
 
         self.camera_pos = self.rect.center
         self.map_pos = None
-
-        self.gun = Gun()
 
     def update(self, map_surface, screen, camera):
         self.movement.update(self, map_surface)
