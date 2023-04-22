@@ -5,11 +5,11 @@ from classes.ui.status_bar import StatusBar
 class UserInterface:
     def __init__(self, screen_dimensions):
         self.stamina_bar = StaminaBar(screen_dimensions)
-        self.health_bar = StatusBar(screen_dimensions, 1, "Health")
+        self.charge_bar = StatusBar(screen_dimensions)
 
     def update(self, screen, player):
         # Update the stamina bar
-        self.stamina_bar.update(player.energy.current_stamina, player.energy.fatigue_level, screen)
+        self.stamina_bar.update(player, screen)
 
         # Update other status bars
-        self.health_bar.update(player.health, screen)
+        self.charge_bar.update(player.gun.charge_modifier, screen)

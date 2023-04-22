@@ -108,6 +108,20 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/classes/ui/stamina_bar.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/classes/ui/status_bar.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/classes/ui/user_interface.py">
           <value>
             <Attribute>

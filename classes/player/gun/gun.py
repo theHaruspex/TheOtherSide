@@ -7,7 +7,8 @@ from classes.player.gun.projectile import Projectile
 class Gun:
     CHARGE_SPEED = 3.5
     MAX_CHARGE = 100
-    MIN_CHARGE = 1
+    MIN_CHARGE = 0
+
     COOLDOWN_DURATION = 1  # seconds
 
     def __init__(self):
@@ -25,17 +26,19 @@ class Gun:
         return dx, dy
 
     def handle_mouse(self, player):
-        left_pressed, _, right_pressed = pygame.mouse.get_pressed()
-        self.handle_charging(right_pressed, player)
-        self.shoot_projectile(player) if left_pressed else None
+        left_pressed = pygame.mouse.get_pressed()[0]
+        self.handle_charging(left_pressed, player)
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONUP and left_pressed:
+                self.shoot_projectile(player)
 
     def reset_charge(self):
         self.charge_modifier = self.MIN_CHARGE
         self.is_charging = False
         self.is_charged = False
 
-    def handle_charging(self, right_pressed, player):
-        if not right_pressed:
+    def handle_charging(self, charge_button, player):
+        if not charge_button:
             self.reset_charge()
             return
 
@@ -43,16 +46,16 @@ class Gun:
             self.is_charging = False
             return
 
-        self.charge_modifier = min(self.charge_modifier + self.CHARGE_SPEED, self.MAX_CHARGE)
-        self.is_charging = self.charge_modifier < self.MAX_CHARGE
-        self.is_charged = self.charge_modifier == self.MAX_CHARGE
+        if not self.cooldown:
+            self.charge_modifier = min(self.charge_modifier + self.CHARGE_SPEED, self.MAX_CHARGE)
+            self.is_charging = self.charge_modifier < self.MAX_CHARGE
+            self.is_charged = self.charge_modifier == self.MAX_CHARGE
 
     def shoot_projectile(self, player):
         if player.energy.is_fatigued:
             return
 
-        current_time = time.time()
-        if current_time - self.last_shot_time >= self.COOLDOWN_DURATION:
+        if not self.cooldown:
             mouse_pos = pygame.mouse.get_pos()
             self.projectiles.append(
                 Projectile(
@@ -62,7 +65,7 @@ class Gun:
                     player=player
                 )
             )
-            self.last_shot_time = current_time
+            self.last_shot_time = time.time()
             self.reset_charge()
 
     def update_projectiles(self, map_surface):
@@ -71,3 +74,8 @@ class Gun:
     def update(self, player, map_surface):
         self.handle_mouse(player)
         self.update_projectiles(map_surface)
+
+    @property
+    def cooldown(self):
+        current_time = time.time()
+        return current_time - self.last_shot_time < self.COOLDOWN_DURATION

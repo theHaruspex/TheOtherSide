@@ -2,8 +2,8 @@ import pygame
 
 
 class Movement:
-    BASE_VELOCITY = 15
-    FATIGUE_VELOCITY = BASE_VELOCITY // 5
+    BASE_VELOCITY = 5
+    FATIGUE_VELOCITY = BASE_VELOCITY / 1.5
     FRICTION = 0.95
 
     def __init__(self):
