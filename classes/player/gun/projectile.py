@@ -1,6 +1,7 @@
 import pygame
 import math
 
+from classes.sound import Sound
 
 class Projectile:
     COLOR = (255, 255, 255)
@@ -15,6 +16,7 @@ class Projectile:
         self.speed = self._scale_speed(charge_modifier)
         self._scale_velocity(player)
         self.knock_back_player(player)
+        Sound.play_sound('pew')
 
 
     def _scale_size(self, charge_modifier):

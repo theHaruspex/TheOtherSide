@@ -1,10 +1,7 @@
-sample_dialogue = (
-    "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut "
-    "laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation "
-    "ullamcorper.")
 
-sample_portrait_path = "resources/the_prophetess.jpg"
-sample_background_path = "resources/dialogue_background.jpg"
+
+sample_portrait_path = "resources/images/the_prophetess.jpg"
+sample_background_path = "resources/images/dialogue_background.jpg"
 prophetess_dialogue = {
     "start": {
         "text": "Welcome, traveler. You seek guidance?",

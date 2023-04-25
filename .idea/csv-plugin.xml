@@ -52,6 +52,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/classes/map/map.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/classes/player.py">
           <value>
             <Attribute>
@@ -88,6 +95,13 @@
           </value>
         </entry>
         <entry key="/classes/player/stamina.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/classes/sound/sound.py">
           <value>
             <Attribute>
               <option name="separator" value=":" />
@@ -151,6 +165,13 @@
           </value>
         </entry>
         <entry key="/scratch.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/venv/lib/python3.9/site-packages/pygame/cursors.py">
           <value>
             <Attribute>
               <option name="separator" value="," />
